@@ -195,7 +195,7 @@ exports.randomplay = (req, res, next) => {
 
 
 exports.randomcheck = (req, res, next) => {
-    
+    try{
     const {quiz, query} = req;
     req.session.alreadyPlayed = req.session.alreadyPlayed || [];
 
@@ -217,5 +217,7 @@ exports.randomcheck = (req, res, next) => {
     }
 
     res.render('quizzes/random_result', {actual_answer, result, score});
-
+    } catch (error){
+        next(error);
+    }
 }
