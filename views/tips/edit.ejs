@@ -1,0 +1,11 @@
+<form method="get" action="/quizzes/:quizId/tips/:tipId/edit">
+
+    <p>
+        Previous Tip: <b><%= tip.text %></b>
+    </p>
+
+    <div class="wideRow">
+        <input type="text" class="itemWide" name="new_tip" value="" autocomplete="off"/>
+        <input type="submit" class="itemNarrow" value="Update">
+    </div>
+</form>
