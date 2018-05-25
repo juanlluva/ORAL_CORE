@@ -1,11 +1,17 @@
-<form method="get" action="/quizzes/:quizId/tips/:tipId/edit">
+<h1>
+    Edit Tip:
+</h1>
 
-    <p>
-        Previous Tip: <b><%= tip.text %></b>
-    </p>
+<form method="post" action="/quizzes/<%= quiz.id %>/tips/<%=tip.id%>?_method=PUT">
 
     <div class="wideRow">
-        <input type="text" class="itemWide" name="new_tip" value="" autocomplete="off"/>
-        <input type="submit" class="itemNarrow" value="Update">
+        <label for="text" class="itemNarrow">Pista a editar: </label>
+        <input type="text" class="itemWide" id ="text" name="text" value="<%tip.text%>" placeholder= "Escriba text de la pista" autocomplete="off"/>
     </div>
+
+    <a href="/goback"><button type="button">Cancel</button></a>
+
+    <input type="submit" value="Save">
+
 </form>
+
