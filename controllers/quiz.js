@@ -86,6 +86,18 @@ exports.index = (req, res, next) => {
 
         return models.quiz.findAll(findOptions);
     })
+
+    // ESTO ES DE PRUEBAAA, de un examen. Y funciona btw
+    // models.quiz.findAll({ where: {authorId: null}, include: [{model: models.user, as: 'author'}]})
+    // 
+    // OOOOOOOOO
+    // 
+    // models.quiz.findAll({ include: [{model: models.user, as: 'author'}]})
+    // .then(quizzes => {
+    //     let filtered = quizzes.filter(quiz=> !quiz.author)
+    //     return filtered;
+    // })
+    // FIN DE LA PRUEBA
     .then(quizzes => {
         res.render('quizzes/index.ejs', {
             quizzes, 
@@ -292,4 +304,75 @@ exports.randomcheck = (req, res, next) => {
     } catch (error){
         next(error);
     }
-}
+};
+
+
+exports.challengeplay = (req, res, next) => {
+
+    req.session.alreadyPlayed = req.session.alreadyPlayed || [];
+
+    // req.session.points = req.session.points || 0;
+
+    const whereOpt = {id: {[Sequelize.Op.notIn] : req.session.alreadyPlayed}} ;
+
+    models.quiz.count({where:whereOpt})
+
+   .then(count => {
+       return models.quiz.findAll({
+            where: whereOpt,
+            offset: Math.floor(Math.random()*count),
+            limit:1
+         })
+
+       .then(quizzes => {
+            return quizzes[0];
+        })
+   })
+
+    .then(quiz => {
+        if(quiz === undefined) {
+            req.session.alreadyPlayed = [];
+            res.render('quizzes/rank_user', {
+                // points
+            });
+        } else {
+            res.render('quizzes/challenge_play', {
+               quiz,
+            //    points
+            });
+        }
+    })
+
+    .catch(error => next(error));
+
+};
+
+
+
+exports.givePoints = (req, res, next) => {
+    try{
+        const {quiz, query} = req;
+        req.session.alreadyPlayed = req.session.alreadyPlayed || [];
+
+        const actual_answer = query.answer || "";
+        const right_answer = quiz.answer;
+
+        const result = actual_answer.toLowerCase().trim() === right_answer.toLowerCase().trim();
+
+        if (result){
+            if(req.session.alreadyPlayed.indexOf(req.quiz.id) === -1){ 
+                req.session.alreadyPlayed.push(req.quiz.id);
+            }
+        } 
+
+        if(!result){
+            req.session.alreadyPlayed = [];
+        }
+
+        res.render('quizzes/inform_result', {  
+            //points 
+        });
+    } catch (error){
+        next(error);
+    }
+};
