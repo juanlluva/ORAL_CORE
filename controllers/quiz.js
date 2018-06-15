@@ -309,11 +309,15 @@ exports.randomcheck = (req, res, next) => {
 
 exports.challengeplay = (req, res, next) => {
 
-    req.session.alreadyPlayed = req.session.alreadyPlayed || [];
+    req.session.alreadyPlayed1 = req.session.alreadyPlayed1 || [];
+    const correct = req.session.correct || 0;
+    const mistakes = req.session.mistakes || 0;
 
-    // req.session.points = req.session.points || 0;
+    const whereOpt = {id: {[Sequelize.Op.notIn] : req.session.alreadyPlayed1}} ;
 
-    const whereOpt = {id: {[Sequelize.Op.notIn] : req.session.alreadyPlayed}} ;
+    if((correct+mistakes)!== 0){
+        req.session.user.level = Math.round(correct/(correct+mistakes));
+    }
 
     models.quiz.count({where:whereOpt})
 
@@ -331,14 +335,14 @@ exports.challengeplay = (req, res, next) => {
 
     .then(quiz => {
         if(quiz === undefined) {
-            req.session.alreadyPlayed = [];
-            res.render('quizzes/rank_user', {
-                // points
-            });
+            req.session.alreadyPlayed1 = [];
+            req.session.correct = 0;
+            req.session.mistakes = 0;
+                
+            res.render('quizzes/rank_user');
         } else {
             res.render('quizzes/challenge_play', {
                quiz,
-            //    points
             });
         }
     })
@@ -349,28 +353,37 @@ exports.challengeplay = (req, res, next) => {
 
 
 
-exports.givePoints = (req, res, next) => {
+exports.givepoints = (req, res, next) => {
     try{
         const {quiz, query} = req;
-        req.session.alreadyPlayed = req.session.alreadyPlayed || [];
+        req.session.alreadyPlayed1 = req.session.alreadyPlayed1 || [];
+
+        req.session.correct = req.session.correct || 0;
+        req.session.mistakes = req.session.mistakes || 0;
 
         const actual_answer = query.answer || "";
         const right_answer = quiz.answer;
 
         const result = actual_answer.toLowerCase().trim() === right_answer.toLowerCase().trim();
 
-        if (result){
-            if(req.session.alreadyPlayed.indexOf(req.quiz.id) === -1){ 
-                req.session.alreadyPlayed.push(req.quiz.id);
-            }
-        } 
-
-        if(!result){
-            req.session.alreadyPlayed = [];
+        if(req.session.alreadyPlayed1.indexOf(req.quiz.id) === -1){ 
+            req.session.alreadyPlayed1.push(req.quiz.id);
         }
 
+        if(result){
+            req.session.correct++;
+        } 
+        if(!result){
+            req.session.mistakes++;
+        }
+        const correct = req.session.correct;
+        const mistakes = req.session.mistakes;
+
         res.render('quizzes/inform_result', {  
-            //points 
+            actual_answer, 
+            result,
+            correct,
+            mistakes
         });
     } catch (error){
         next(error);

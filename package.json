@@ -24,6 +24,7 @@
     "connect-session-sequelize": "^5.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "easytimer.js": "^2.2.2",
     "ejs": "~2.5.7",
     "express": "^4.15.5",
     "express-flash": "0.0.2",

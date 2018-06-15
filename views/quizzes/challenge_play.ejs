@@ -1,0 +1,24 @@
+<body>
+    <h1>
+        Challenge Play:
+    </h1>
+ 
+    <div>
+            Do you know the answer?
+    </div>
+    
+    <form method="get" action="/quizzes/givepoints/<%= quiz.id %>">
+    
+        <p>
+            Question: <b><%= quiz.question %></b>
+        </p>
+    
+    
+        <div class="wideRow">
+            <input type="text" class="itemWide" id="answer" name="answer" value="" placeholder="Answer" autocomplete="off"/>
+            <input type="submit" class="itemNarrow" id="send" value="Check">
+        </div>
+    </form>
+</body>
+
+

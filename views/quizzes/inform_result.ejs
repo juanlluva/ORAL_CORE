@@ -1,0 +1,18 @@
+<h1>
+        Challenge Play:
+</h1>
+
+<div>
+   <p>Correct answers : <span id="score"><%= score %></span></p>
+   <p>Wrong answers : <%= mistakes %> </p> 
+</div>
+
+<p>
+    The answer <strong> <%= actual_answer %> </strong> is <%= result ? 'right' : 'wrong' %>.
+</p>
+
+<p>GET READY FOR YOUR NEXT QUESTION!</p>
+    
+<script type="text/JavaScript">
+    setTimeout("location.href = '/quizzes/challengeplay';",3000);
+</script>

@@ -123,11 +123,13 @@ router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 router.get('/quizzes/randomplay', quizController.randomplay);
 router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomcheck);
 
-
+// Mejoras
 router.get ('/quizzes/chooseGame',  (req, res, next) => {
     res.render('choose_game');
 });
 router.get('/quizzes/challengeplay', sessionController.loginRequired, quizController.challengeplay);
+router.get('/quizzes/givepoints/:quizId(\\d+)', quizController.givepoints);
+// Fin de mejoras
 
 router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit', sessionController.loginRequired,tipController.adminOrAuthorRequired,tipController.edit);
 router.put('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)', sessionController.loginRequired, tipController.adminOrAuthorRequired,tipController.update);

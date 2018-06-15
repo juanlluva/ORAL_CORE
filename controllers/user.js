@@ -76,14 +76,16 @@ exports.new = (req, res, next) => {
 exports.create = (req, res, next) => {
 
     const {username, password} = req.body;
+    const level = 0;
 
     const user = models.user.build({
         username,
-        password
+        password,
+        level
     });
 
     // Save into the data base
-    user.save({fields: ["username", "password", "salt"]})
+    user.save({fields: ["username", "password","level", "salt"]})
     .then(user => { // Render the users page
         req.flash('success', 'User created successfully.');
         if (req.session.user) {
